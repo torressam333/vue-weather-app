@@ -1,24 +1,27 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
+  <the-header title="Vue Weather App"></the-header>
 
 </template>
 
 <script>
 
+import TheHeader from "./components/TheHeader";
 export default {
   name: 'App',
   components: {
+    TheHeader
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+html {
+  height: 100vh;
+  width: 100vw;
+}
+
+body {
+  font-family: Verdana, sans-serif;
+  margin: 0 auto;
 }
 </style>

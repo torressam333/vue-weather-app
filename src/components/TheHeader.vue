@@ -17,7 +17,7 @@ export default {
 <style scoped>
 header {
   align-items: center;
-  background-color: #3071a4;
+  background: linear-gradient(173deg, #fff, #347ab0, #689fc9);
   display: flex;
   height: 5rem;
   justify-content: center;
