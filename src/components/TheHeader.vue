@@ -1,17 +1,29 @@
 <template>
   <header>
-    <h1>{{ title }}</h1>
+    <h1>{{ passedTitle }}</h1>
   </header>
 </template>
 
 <script>
+import { computed } from 'vue';
+
 export default {
+  name: 'TheHeader',
   props: {
     title: {
       type: String,
       required: true
     }
-  }
+  },
+  setup (props) {
+    const passedTitle = computed(() => {
+      return props.title;
+    });
+
+    return {
+      passedTitle
+    }
+  },
 }
 </script>
 <style scoped>

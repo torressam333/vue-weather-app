@@ -1,15 +1,22 @@
 <template>
-  <the-header title="Vue Weather App"></the-header>
-
+  <TheHeader :title="title"></TheHeader>
 </template>
 
 <script>
 
+import { ref } from 'vue';
 import TheHeader from "./components/TheHeader";
 export default {
   name: 'App',
   components: {
     TheHeader
+  },
+  setup () {
+    const title = ref('Vue Weather App');
+
+    return {
+      title
+    }
   }
 }
 </script>
