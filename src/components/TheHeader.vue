@@ -1,11 +1,13 @@
 <template>
-  <header>
-    <h1>{{ passedTitle }}</h1>
-  </header>
+  <div>
+    <header>
+      <h1>{{ passedTitle }}</h1>
+    </header>
+  </div>
 </template>
 
 <script>
-import { computed } from 'vue';
+import {computed} from 'vue';
 
 export default {
   name: 'TheHeader',
@@ -31,7 +33,7 @@ header {
   align-items: center;
   background: linear-gradient(173deg, #fff, #347ab0, #689fc9);
   display: flex;
-  height: 5rem;
+  height: 6rem;
   justify-content: center;
   width: 100%;
 }

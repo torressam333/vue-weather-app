@@ -6,13 +6,14 @@
 
 import { ref } from 'vue';
 import TheHeader from "./components/TheHeader";
+
 export default {
   name: 'App',
   components: {
     TheHeader
   },
   setup () {
-    const title = ref('Vue Weather App');
+    const title = ref('Weather Wizard');
 
     return {
       title
