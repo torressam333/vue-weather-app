@@ -18,14 +18,19 @@
       </form>
     </template>
   </base-card>
+  <weather-output
+      :weather-data="weatherData"
+  ></weather-output>
 </template>
 
 <script>
 import BaseCard from './BaseCard';
 import {reactive, ref} from "vue";
+import WeatherOutput from "./WeatherOutput";
 
 export default {
   components: {
+    WeatherOutput,
     BaseCard
   },
   setup () {
@@ -35,6 +40,8 @@ export default {
 
     async function getCurrentWeather () {
       const response = await fetch(`${baseWeatherApiUrl}q=${userInput.value}`);
+
+      userInput.value = null;
 
       return weatherData.value = await response.json();
     }
