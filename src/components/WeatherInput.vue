@@ -10,9 +10,8 @@
               v-model="userInput"
               id="weather-search"
               placeholder="Get weather by entering a location..."
-              type="text"
-          >
-          <a href="#" class="search-icon">
+              type="text">
+          <a @click.prevent="getCurrentWeather" class="search-icon">
             <!-- explicit style -->
             <font-awesome-icon :icon="['fas', 'search']"/>
           </a>
@@ -23,7 +22,7 @@
 
 <script>
 import BaseCard from './BaseCard';
-import {ref} from "vue";
+import {reactive, ref} from "vue";
 
 export default {
   components: {
@@ -31,9 +30,19 @@ export default {
   },
   setup () {
     const userInput = ref(null);
+    const baseWeatherApiUrl = process.env.VUE_APP_BASE_API_URL;
+    let weatherData = reactive({});
+
+    async function getCurrentWeather () {
+      const response = await fetch(`${baseWeatherApiUrl}q=${userInput.value}`);
+
+      return weatherData.value = await response.json();
+    }
 
     return {
-      userInput
+      getCurrentWeather,
+      userInput,
+      weatherData
     }
   }
 }
@@ -42,8 +51,13 @@ export default {
 <style scoped>
 a.search-icon{
   color: #347ab0;
+  cursor: pointer;
   font-size: 1.4em;
   padding: 3px;
+}
+
+a.search-icon:hover {
+  color: #676767;
 }
 
 h5 {
