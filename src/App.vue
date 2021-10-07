@@ -1,18 +1,18 @@
 <template>
   <TheHeader :title="title"></TheHeader>
-  <main-input></main-input>
+  <main-view></main-view>
 </template>
 
 <script>
 
 import { ref } from 'vue';
 import TheHeader from "./components/TheHeader";
-import MainInput from "./components/MainInput";
+import MainView from "./components/MainView";
 
 export default {
   name: 'App',
   components: {
-    MainInput,
+    MainView,
     TheHeader
   },
   setup () {

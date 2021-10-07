@@ -5,45 +5,48 @@
     </template>
     <template v-slot:content>
       <form class="weather-form">
+        <a @click="getCurrentWeather" class="search-icon">
+          <!-- explicit style -->
+          <font-awesome-icon :icon="['fas', 'search']"/>
+        </a>
           <input
               class="weather-search"
               v-model="userInput"
               id="weather-search"
               placeholder="Get weather by entering a location..."
               type="text">
-          <a @click.prevent="getCurrentWeather" class="search-icon">
-            <!-- explicit style -->
-            <font-awesome-icon :icon="['fas', 'search']"/>
-          </a>
       </form>
     </template>
   </base-card>
-  <weather-output
-      :weather-data="weatherData"
-  ></weather-output>
 </template>
 
 <script>
 import BaseCard from './BaseCard';
-import {reactive, ref} from "vue";
-import WeatherOutput from "./WeatherOutput";
+import {provide, ref } from "vue";
 
 export default {
   components: {
-    WeatherOutput,
     BaseCard
   },
   setup () {
     const userInput = ref(null);
-    const baseWeatherApiUrl = process.env.VUE_APP_BASE_API_URL;
-    let weatherData = reactive({});
+    const baseWeatherApiUrl = process.env.VUE_APP_WEATHER_STACK_BASE_URL;
+    const weatherApiKey = process.env.VUE_APP_WEATHER_STACK_API_KEY
+
+    const weatherData = ref(null)
+
+    provide('weatherData', weatherData);
 
     async function getCurrentWeather () {
-      const response = await fetch(`${baseWeatherApiUrl}q=${userInput.value}`);
+      const response =
+          await fetch(
+              `${baseWeatherApiUrl}/current?access_key=${weatherApiKey}&query=${userInput.value}`
+          );
 
+      //Empty input field
       userInput.value = null;
 
-      return weatherData.value = await response.json();
+      return (weatherData.value = await response.json())
     }
 
     return {
@@ -59,8 +62,9 @@ export default {
 a.search-icon{
   color: #347ab0;
   cursor: pointer;
-  font-size: 1.4em;
-  padding: 3px;
+  font-size: 1.2em;
+  margin-right: 2px;
+  padding: 5px 0;
 }
 
 a.search-icon:hover {
