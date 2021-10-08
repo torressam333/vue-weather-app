@@ -18,11 +18,12 @@
       </form>
     </template>
   </base-card>
+  <slot />
 </template>
 
 <script>
 import BaseCard from './BaseCard';
-import {provide, ref } from "vue";
+import {provide, ref, onBeforeMount } from "vue";
 
 export default {
   components: {
@@ -48,6 +49,19 @@ export default {
 
       return (weatherData.value = await response.json())
     }
+
+    async function getDefaultWeather () {
+      const response =
+          await fetch(
+              `${baseWeatherApiUrl}/current?access_key=${weatherApiKey}&query=Phoenix`
+          );
+
+      return (weatherData.value = await response.json())
+    }
+
+    onBeforeMount(() => {
+      getDefaultWeather();
+    });
 
     return {
       getCurrentWeather,

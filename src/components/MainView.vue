@@ -1,7 +1,8 @@
 <template>
   <div class="container">
-    <weather-input></weather-input>
-    <weather-output></weather-output>
+    <weather-input>
+      <weather-output></weather-output>
+    </weather-input>
   </div>
 </template>
 <script>
