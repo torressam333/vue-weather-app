@@ -18,31 +18,36 @@
       </form>
     </template>
   </base-card>
-  <slot />
+  <!--Weather api results  -->
+  <weather-output></weather-output>
 </template>
 
 <script>
 import BaseCard from './BaseCard';
-import {provide, ref, onBeforeMount } from "vue";
+import WeatherOutput from "./WeatherOutput";
+import {provide, ref, onBeforeMount, reactive} from "vue";
 
 export default {
   components: {
-    BaseCard
+    BaseCard,
+    WeatherOutput
   },
   setup () {
     const userInput = ref(null);
     const baseWeatherApiUrl = process.env.VUE_APP_WEATHER_STACK_BASE_URL;
-    const weatherApiKey = process.env.VUE_APP_WEATHER_STACK_API_KEY
-
-    const weatherData = ref(null)
-
-    provide('weatherData', weatherData);
+    const weatherApiKey = process.env.VUE_APP_WEATHER_STACK_API_KEY;
+    const weatherData = ref(null);
+    let response = reactive({});
 
     async function getCurrentWeather () {
-      const response =
-          await fetch(
-              `${baseWeatherApiUrl}/current?access_key=${weatherApiKey}&query=${userInput.value}`
-          );
+      //Provide default api call for initial value (later this will be specific according to user location)
+      if (userInput.value) {
+        response = await fetch(
+            `${ baseWeatherApiUrl }/current?access_key=${ weatherApiKey }&query=${ userInput.value }`
+        );
+      } else {
+        response = await fetch(`${baseWeatherApiUrl}/current?access_key=${weatherApiKey}&query=Phoenix`)
+      }
 
       //Empty input field
       userInput.value = null;
@@ -50,17 +55,11 @@ export default {
       return (weatherData.value = await response.json())
     }
 
-    async function getDefaultWeather () {
-      const response =
-          await fetch(
-              `${baseWeatherApiUrl}/current?access_key=${weatherApiKey}&query=Phoenix`
-          );
-
-      return (weatherData.value = await response.json())
-    }
+    //Make available to any descendants
+    provide('weatherData', weatherData);
 
     onBeforeMount(() => {
-      getDefaultWeather();
+      getCurrentWeather();
     });
 
     return {

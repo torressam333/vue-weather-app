@@ -1,16 +1,13 @@
 <template>
   <div class="container">
-    <weather-input>
-      <weather-output></weather-output>
-    </weather-input>
+    <weather-input></weather-input>
   </div>
 </template>
 <script>
 import WeatherInput from "./WeatherInput";
-import WeatherOutput from "./WeatherOutput";
 export default {
   name: 'MainView',
-  components: {WeatherInput, WeatherOutput}
+  components: {WeatherInput}
 }
 </script>
 

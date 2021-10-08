@@ -5,9 +5,14 @@
       <h2 class="weather-title">Weather Information</h2>
     </template>
     <template v-slot:content>
-      <div class="form-control" v-if="weatherData">
+      <div class="form-control" v-if="currentData">
         <ul>
           <li v-for="data in currentData" :key="data.name">{{ data }}</li>
+        </ul>
+      </div>
+      <div class="form-control" v-if="locationData">
+        <ul>
+          <li v-for="data in locationData" :key="data.name">{{ data }}</li>
         </ul>
       </div>
     </template>
@@ -24,21 +29,17 @@ export default {
   setup () {
     const weatherData = inject('weatherData');
     let currentData = reactive({});
+    let locationData = reactive({});
 
-    if (weatherData) {
-      currentData = reactive(weatherData.value.current);
-    }
-
-
-    //let locationData = reactive(weatherData.value.location)
 
     watchEffect(() => {
-        console.log('new weatherData', weatherData.value);
+        currentData = weatherData.value;
+        locationData = weatherData.value;
     })
 
     return {
       currentData,
-      //locationData,
+      locationData,
       weatherData,
     }
   }
