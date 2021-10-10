@@ -25,6 +25,7 @@ import BaseCard from "./BaseCard";
 import { inject, reactive, watchEffect } from "vue";
 
 export default {
+  name: 'WeatherOutput',
   components: {BaseCard},
   setup () {
     const weatherData = inject('weatherData');

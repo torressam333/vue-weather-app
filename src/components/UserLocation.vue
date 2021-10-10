@@ -20,9 +20,11 @@ export default {
       //Follow naming conventions from Google Maps API
       lat: coords.value.latitude,
       lng: coords.value.longitude
-    }))
+    }));
 
-    return { currentPosition }
+    return {
+      currentPosition
+    }
   }
 }
 </script>

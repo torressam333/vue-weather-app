@@ -1,3 +1,7 @@
+/*Returns lat and long of current users location
+*
+* *Requires user approval to use location
+* */
 import { onUnmounted, onMounted, ref } from "vue";
 
 export function userGeolocation () {
@@ -7,9 +11,9 @@ export function userGeolocation () {
 
     let watcher = null;
 
-    //Watch when a users position changes
     onMounted(() => {
         if (isSupported) {
+            //Called whenever a users position changes
             watcher = navigator.geolocation.watchPosition(
                 position => (coords.value = position.coords)
             );

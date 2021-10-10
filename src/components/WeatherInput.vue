@@ -33,10 +33,11 @@ export default {
     WeatherOutput
   },
   setup () {
-    const userInput = ref(null);
     const baseWeatherApiUrl = process.env.VUE_APP_WEATHER_STACK_BASE_URL;
+    const userInput = ref(null);
     const weatherApiKey = process.env.VUE_APP_WEATHER_STACK_API_KEY;
     const weatherData = ref(null);
+
     let response = reactive({});
 
     async function getCurrentWeather () {
@@ -55,10 +56,11 @@ export default {
       return (weatherData.value = await response.json())
     }
 
-    //Make available to any descendants
+    //Make available to any descendants*
     provide('weatherData', weatherData);
 
     onBeforeMount(() => {
+      //Provide default location before page loads
       getCurrentWeather();
     });
 
