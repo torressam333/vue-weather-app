@@ -6,14 +6,6 @@
     </template>
     <template v-slot:content>
       <div class="form-control" v-if="currentData">
-        <ul>
-          <li v-for="data in currentData" :key="data.name">{{ data }}</li>
-        </ul>
-      </div>
-      <div class="form-control" v-if="locationData">
-        <ul>
-          <li v-for="data in locationData" :key="data.name">{{ data }}</li>
-        </ul>
       </div>
     </template>
     <template v-slot:footer></template>
@@ -22,25 +14,23 @@
 </template>
 <script>
 import BaseCard from "./BaseCard";
-import { inject, reactive, watchEffect } from "vue";
+import { inject, ref, watchEffect } from "vue";
 
 export default {
   name: 'WeatherOutput',
   components: {BaseCard},
   setup () {
     const weatherData = inject('weatherData');
-    let currentData = reactive({});
-    let locationData = reactive({});
-
+    let currentData = ref();
 
     watchEffect(() => {
-        currentData = weatherData.value;
-        locationData = weatherData.value;
+        currentData = weatherData.data;
+
+
     })
 
     return {
       currentData,
-      locationData,
       weatherData,
     }
   }

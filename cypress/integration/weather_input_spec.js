@@ -6,7 +6,7 @@ describe('Ensure Weather Input Properly Receives api data', () => {
     it('Gets initial weather data on page load', () => {
         cy.server()
         cy.request(Cypress.env('weather_stack_base_url') +
-            "/current?access_key=" + Cypress.env('weather_stack_key') +
+            "?key=" + Cypress.env('weather_stack_key') +
             "&query=Phoenix").as('getWeatherData');
 
         cy.get('@getWeatherData').should((response) => {

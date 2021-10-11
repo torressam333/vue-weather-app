@@ -25,7 +25,7 @@
 <script>
 import BaseCard from './BaseCard';
 import WeatherOutput from "./WeatherOutput";
-import {provide, ref, onBeforeMount, reactive} from "vue";
+import {provide, ref, onBeforeMount, watchEffect} from "vue";
 
 export default {
   components: {
@@ -34,20 +34,23 @@ export default {
   },
   setup () {
     const baseWeatherApiUrl = process.env.VUE_APP_WEATHER_STACK_BASE_URL;
+    //const mapBoxBaseUrl = process.env.VUE_APP_MAPBOX_BASE_URL;
+    //const mapboxApiKey = process.env.VUE_APP_MAPBOX_API_KEY;
     const userInput = ref(null);
     const weatherApiKey = process.env.VUE_APP_WEATHER_STACK_API_KEY;
     const weatherData = ref(null);
 
-    let response = reactive({});
+    //let userCoordinates = inject('userCoordinates');
+    //let currentUserCoords = ref();
 
     async function getCurrentWeather () {
+      let response = {};
+
       //Provide default api call for initial value (later this will be specific according to user location)
       if (userInput.value) {
         response = await fetch(
-            `${ baseWeatherApiUrl }/current?access_key=${ weatherApiKey }&query=${ userInput.value }`
+            `${ baseWeatherApiUrl }?key=${ weatherApiKey }&city=${userInput.value}&units=I`
         );
-      } else {
-        response = await fetch(`${baseWeatherApiUrl}/current?access_key=${weatherApiKey}&query=Phoenix`)
       }
 
       //Empty input field
@@ -56,13 +59,30 @@ export default {
       return (weatherData.value = await response.json())
     }
 
+    //Get location data based on users coordinates
+    // async function convertCoordsToLocationData () {
+    //   let coordResponse = ref();
+    //
+    //   if (currentUserCoords.value) {
+    //     coordResponse = await fetch(
+    //         `${mapBoxBaseUrl}/${userCoordinates.lng},${userCoordinates.lat}.json?access_token=${mapboxApiKey}`
+    //     );
+    //   }
+    //
+    //   return (currentUserCoords.value = await coordResponse)
+    // }
+
     //Make available to any descendants*
     provide('weatherData', weatherData);
 
     onBeforeMount(() => {
       //Provide default location before page loads
-      getCurrentWeather();
+      //getCurrentWeather();
     });
+
+    watchEffect(() => {
+      //currentUserCoords = userCoordinates.value;
+    })
 
     return {
       getCurrentWeather,

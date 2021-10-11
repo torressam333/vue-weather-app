@@ -1,7 +1,8 @@
 <template>
   <div class="container">
-    <user-location></user-location>
-    <weather-input></weather-input>
+    <user-location>
+      <weather-input></weather-input>
+    </user-location>
   </div>
 </template>
 <script>
