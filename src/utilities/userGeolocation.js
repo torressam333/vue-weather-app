@@ -24,5 +24,6 @@ export function userGeolocation () {
         if(watcher) navigator.geolocation.clearWatch(watcher);
     });
 
+
     return { coords, isSupported}
 }

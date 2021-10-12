@@ -1,11 +1,11 @@
 <template>
-  <div class="weather-output">
+  <div class="weather-output" v-if="extractedData">
   <base-card>
     <template v-slot:title>
       <h2 class="weather-title">Weather Information</h2>
     </template>
     <template v-slot:content>
-      <div class="form-control" v-if="currentData">
+      <div class="form-control" v-if="extractedData">
       </div>
     </template>
     <template v-slot:footer></template>
@@ -14,24 +14,26 @@
 </template>
 <script>
 import BaseCard from "./BaseCard";
-import { inject, ref, watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 
 export default {
   name: 'WeatherOutput',
   components: {BaseCard},
-  setup () {
-    const weatherData = inject('weatherData');
-    let currentData = ref();
+  props: {
+    weatherData: {
+      type: Object
+    }
+  },
+  setup (props) {
+    const weatherDataProp = ref(props.weatherData.value);
+    let extractedData = weatherDataProp;
 
     watchEffect(() => {
-        currentData = weatherData.data;
-
-
+      //extractedData = JSON.parse(JSON.stringify(weatherDataProp.value.data[0]));
     })
 
     return {
-      currentData,
-      weatherData,
+      extractedData,
     }
   }
 }

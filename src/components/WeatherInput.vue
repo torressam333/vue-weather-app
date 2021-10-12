@@ -19,13 +19,15 @@
     </template>
   </base-card>
   <!--Weather api results  -->
-  <weather-output></weather-output>
+  <weather-output
+      :weather-data="weatherData"
+  ></weather-output>
 </template>
 
 <script>
 import BaseCard from './BaseCard';
 import WeatherOutput from "./WeatherOutput";
-import {provide, ref, onBeforeMount, watchEffect} from "vue";
+import {inject, ref, onMounted} from "vue";
 
 export default {
   components: {
@@ -33,56 +35,80 @@ export default {
     WeatherOutput
   },
   setup () {
+    let userCoordinates = inject('userCoordinates');
     const baseWeatherApiUrl = process.env.VUE_APP_WEATHER_STACK_BASE_URL;
-    //const mapBoxBaseUrl = process.env.VUE_APP_MAPBOX_BASE_URL;
-    //const mapboxApiKey = process.env.VUE_APP_MAPBOX_API_KEY;
+    const mapBoxBaseUrl = process.env.VUE_APP_MAPBOX_BASE_URL;
+    const mapboxApiKey = process.env.VUE_APP_MAPBOX_API_KEY;
     const userInput = ref(null);
     const weatherApiKey = process.env.VUE_APP_WEATHER_STACK_API_KEY;
-    const weatherData = ref(null);
-
-    //let userCoordinates = inject('userCoordinates');
-    //let currentUserCoords = ref();
+    const weatherData = {};
+    let currentUserCoords = ref(userCoordinates.value);
 
     async function getCurrentWeather () {
       let response = {};
 
-      //Provide default api call for initial value (later this will be specific according to user location)
-      if (userInput.value) {
-        response = await fetch(
-            `${ baseWeatherApiUrl }?key=${ weatherApiKey }&city=${userInput.value}&units=I`
-        );
+      try {
+        response = await fetch(`${baseWeatherApiUrl}?key=${weatherApiKey}&city=${userInput.value}&units=I`);
+
+        //Empty input field
+        userInput.value = null;
+
+        return (weatherData.value = await response.json());
+
+      } catch (error) {
+        console.log(error);
       }
-
-      //Empty input field
-      userInput.value = null;
-
-      return (weatherData.value = await response.json())
     }
 
     //Get location data based on users coordinates
-    // async function convertCoordsToLocationData () {
-    //   let coordResponse = ref();
-    //
-    //   if (currentUserCoords.value) {
-    //     coordResponse = await fetch(
-    //         `${mapBoxBaseUrl}/${userCoordinates.lng},${userCoordinates.lat}.json?access_token=${mapboxApiKey}`
-    //     );
-    //   }
-    //
-    //   return (currentUserCoords.value = await coordResponse)
-    // }
+    async function convertCoordsToLocation () {
+      let response = {};
 
-    //Make available to any descendants*
-    provide('weatherData', weatherData);
+      try {
+        if (currentUserCoords.value) {
+          let lat = userCoordinates.value.lat;
+          let lng = userCoordinates.value.lng;
 
-    onBeforeMount(() => {
-      //Provide default location before page loads
-      //getCurrentWeather();
+          response = await fetch(`${mapBoxBaseUrl}/${lng},${lat}.json?access_token=${mapboxApiKey}`);
+        }
+
+        return (currentUserCoords.value = await response.json());
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    async function getWeatherBasedOnCoordinate () {
+      try {
+        const zip = await getZip();
+        const response = await fetch(`${baseWeatherApiUrl}?key=${weatherApiKey}&postal_code=${zip}&units=I`);
+
+        return await response.json();
+
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    async function getZip () {
+      let allDataReturned = await convertCoordsToLocation();
+      let featureData = allDataReturned.features;
+      let specificLocation = '';
+
+      featureData.forEach((locData, index) => {
+        if (index === 0) {
+          specificLocation = locData.context[0].text;
+        }
+      });
+
+      return specificLocation;
+    }
+
+    onMounted(() => {
+      //Provide default location before page loads based on users geo code
+      getWeatherBasedOnCoordinate();
     });
-
-    watchEffect(() => {
-      //currentUserCoords = userCoordinates.value;
-    })
 
     return {
       getCurrentWeather,
