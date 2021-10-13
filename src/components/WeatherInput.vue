@@ -82,9 +82,13 @@ export default {
     async function getWeatherBasedOnCoordinate () {
       try {
         const zip = await getZip();
-        const response = await fetch(`${baseWeatherApiUrl}?key=${weatherApiKey}&postal_code=${zip}&units=I`);
+        console.log('here1')
+        if (zip) {
+          console.log('here')
+          const response = await fetch(`${baseWeatherApiUrl}?key=${weatherApiKey}&postal_code=${zip}&units=I`);
 
-        return await response.json();
+          return await response.json();
+        }
 
       } catch (error) {
         console.log(error)
@@ -92,17 +96,22 @@ export default {
     }
 
     async function getZip () {
-      let allDataReturned = await convertCoordsToLocation();
-      let featureData = allDataReturned.features;
-      let specificLocation = '';
+      try {
+        let allDataReturned = await convertCoordsToLocation();
+        let featureData = allDataReturned.features;
+        let specificLocation = '';
 
-      featureData.forEach((locData, index) => {
-        if (index === 0) {
-          specificLocation = locData.context[0].text;
-        }
-      });
+        featureData.forEach((locData, index) => {
+          if (index === 0) {
+            specificLocation = locData.context[0].text;
+          }
+        });
 
-      return specificLocation;
+        return specificLocation;
+      } catch (error) {
+        console.log(error)
+      }
+
     }
 
     onMounted(() => {
