@@ -2,7 +2,7 @@
 *
 * *Requires user approval to use location
 * */
-import {onUnmounted, ref, onBeforeMount} from "vue";
+import {onUnmounted, ref, onMounted} from "vue";
 
 export function userGeolocation () {
     const coords = ref({latitude: 0, longitude: 0});
@@ -11,7 +11,7 @@ export function userGeolocation () {
 
     let watcher = null;
 
-    onBeforeMount(() => {
+    onMounted(() => {
         if (isSupported) {
             //Called whenever a users position changes
             watcher = navigator.geolocation.watchPosition(

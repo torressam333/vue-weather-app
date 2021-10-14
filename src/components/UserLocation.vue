@@ -1,33 +1,42 @@
 <template>
-  <div>
-    <div>
-      <h4>Position</h4>
-      Latitude: {{ currentPosition.lat.toFixed(2) }}, Longitude:
-      {{ currentPosition.lng.toFixed(2) }}
-      <slot></slot>
-    </div>
-  </div>
+  <weather-input
+      :zip="zip"
+  ></weather-input>
 </template>
 
 <script>
-import { computed, provide } from "vue";
-import { userGeolocation } from "../utilities/userGeolocation";
+
+import {getUserIp} from "../utilities/getUserIp";
+import WeatherInput from "./WeatherInput";
+import axios from 'axios';
 
 export default {
   name: 'UserLocation',
-  setup () {
-    const { coords } = userGeolocation();
-    const currentPosition = computed(() => ({
-      //Follow naming conventions from Google Maps API
-      lat: coords.value.latitude,
-      lng: coords.value.longitude
-    }));
-
-    provide('userCoordinates', currentPosition);
-
+  components: {WeatherInput},
+  data () {
     return {
-      currentPosition
+      ipAddress: null,
+      ipStackKey: process.env.VUE_APP_IP_STACK_KEY,
+      ipStackUrl: process.env.VUE_APP_IP_STACK_URL,
+      zip: null
     }
+  },
+  methods: {
+    extractIp () {
+      let ipObj = getUserIp();
+
+      ipObj.then(response => this.ipAddress = response.ip)
+
+    },
+
+    getZipFromIp () {
+      axios.get(`${this.ipStackUrl}2600:8800:86ac:6400:12e7:c6ff:fe16:8c6e?access_key=${this.ipStackKey}`)
+          .then(response => this.zip = response.data.zip)
+    }
+  },
+  mounted () {
+    this.extractIp();
+    this.getZipFromIp();
   }
 }
 </script>

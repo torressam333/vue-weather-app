@@ -5,131 +5,77 @@
     </template>
     <template v-slot:content>
       <form class="weather-form">
+        <input
+            class="weather-search"
+            v-model="userInput"
+            id="weather-search"
+            placeholder="Get weather by entering a location..."
+            type="text">
         <a @click="getCurrentWeather" class="search-icon">
           <!-- explicit style -->
           <font-awesome-icon :icon="['fas', 'search']"/>
         </a>
-          <input
-              class="weather-search"
-              v-model="userInput"
-              id="weather-search"
-              placeholder="Get weather by entering a location..."
-              type="text">
       </form>
     </template>
   </base-card>
-  <!--Weather api results  -->
+  <!--Weather api results slot-->
   <weather-output
-      :weather-data="weatherData"
+      :current-location-weather="currentLocationWeather"
+      :current-weather="currentWeather"
   ></weather-output>
 </template>
 
 <script>
 import BaseCard from './BaseCard';
+import axios from 'axios';
 import WeatherOutput from "./WeatherOutput";
-import {inject, ref, onMounted} from "vue";
 
 export default {
   components: {
+    WeatherOutput,
     BaseCard,
-    WeatherOutput
   },
-  setup () {
-    let userCoordinates = inject('userCoordinates');
-    const baseWeatherApiUrl = process.env.VUE_APP_WEATHER_STACK_BASE_URL;
-    const mapBoxBaseUrl = process.env.VUE_APP_MAPBOX_BASE_URL;
-    const mapboxApiKey = process.env.VUE_APP_MAPBOX_API_KEY;
-    const userInput = ref(null);
-    const weatherApiKey = process.env.VUE_APP_WEATHER_STACK_API_KEY;
-    const weatherData = {};
-    let currentUserCoords = ref(userCoordinates.value);
-
-    async function getCurrentWeather () {
-      let response = {};
-
-      try {
-        response = await fetch(`${baseWeatherApiUrl}?key=${weatherApiKey}&city=${userInput.value}&units=I`);
-
-        //Empty input field
-        userInput.value = null;
-
-        return (weatherData.value = await response.json());
-
-      } catch (error) {
-        console.log(error);
-      }
+  props: {
+    zip: {
+      type: String
     }
-
-    //Get location data based on users coordinates
-    async function convertCoordsToLocation () {
-      let response = {};
-
-      try {
-        if (currentUserCoords.value) {
-          let lat = userCoordinates.value.lat;
-          let lng = userCoordinates.value.lng;
-
-          response = await fetch(`${mapBoxBaseUrl}/${lng},${lat}.json?access_token=${mapboxApiKey}`);
-        }
-
-        return (currentUserCoords.value = await response.json());
-
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    async function getWeatherBasedOnCoordinate () {
-      try {
-        const zip = await getZip();
-        console.log('here1')
-        if (zip) {
-          console.log('here')
-          const response = await fetch(`${baseWeatherApiUrl}?key=${weatherApiKey}&postal_code=${zip}&units=I`);
-
-          return await response.json();
-        }
-
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    async function getZip () {
-      try {
-        let allDataReturned = await convertCoordsToLocation();
-        let featureData = allDataReturned.features;
-        let specificLocation = '';
-
-        featureData.forEach((locData, index) => {
-          if (index === 0) {
-            specificLocation = locData.context[0].text;
-          }
-        });
-
-        return specificLocation;
-      } catch (error) {
-        console.log(error)
-      }
-
-    }
-
-    onMounted(() => {
-      //Provide default location before page loads based on users geo code
-      getWeatherBasedOnCoordinate();
-    });
-
+  },
+  data () {
     return {
-      getCurrentWeather,
-      userInput,
-      weatherData
+      baseWeatherApiUrl: process.env.VUE_APP_WEATHER_STACK_BASE_URL,
+      currentLocationWeather:null,
+      currentWeather: null,
+      userInput: null,
+      weatherApiKey: process.env.VUE_APP_WEATHER_STACK_API_KEY,
     }
+  },
+  methods: {
+    getCurrentLocationWeather () {
+      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&postal_code=${ this.zip }&units=I`)
+          .then(response => {
+            if (response.status === 200) {
+              this.currentLocationWeather = response.data.data[0]
+            }
+          })
+    },
+    getCurrentWeather () {
+      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&city=${ this.userInput }&units=I`)
+          .then(response => {
+            this.userInput = null;
+            if (response.status === 200) {
+              this.currentWeather = response.data.data[0];
+            }
+          })
+    }
+  },
+  beforeMount () {
+    this.getCurrentLocationWeather();
   }
 }
 </script>
 
 <style scoped>
-a.search-icon{
+a.search-icon {
   color: #347ab0;
   cursor: pointer;
   font-size: 1.2em;
@@ -144,10 +90,10 @@ a.search-icon:hover {
 h5 {
   font-size: 1.3rem;
   color: #676767;
-  text-align:center;
-  display:inline-block;
-  position:relative;
-  width:100%; /*Add this*/
+  text-align: center;
+  display: inline-block;
+  position: relative;
+  width: 100%; /*Add this*/
 }
 
 .weather-form {

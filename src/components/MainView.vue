@@ -1,16 +1,14 @@
 <template>
   <div class="container">
-    <user-location>
-      <weather-input></weather-input>
-    </user-location>
+    <user-location></user-location>
   </div>
 </template>
+
 <script>
-import WeatherInput from "./WeatherInput";
 import UserLocation from "./UserLocation";
 export default {
   name: 'MainView',
-  components: {UserLocation, WeatherInput}
+  components: {UserLocation}
 }
 </script>
 

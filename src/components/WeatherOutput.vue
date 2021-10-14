@@ -1,11 +1,11 @@
 <template>
-  <div class="weather-output" v-if="extractedData">
+  <div class="weather-output" v-if="userLocationWeather || currentWeather">
   <base-card>
     <template v-slot:title>
       <h2 class="weather-title">Weather Information</h2>
     </template>
     <template v-slot:content>
-      <div class="form-control" v-if="extractedData">
+      <div class="form-control">
       </div>
     </template>
     <template v-slot:footer></template>
@@ -14,30 +14,33 @@
 </template>
 <script>
 import BaseCard from "./BaseCard";
-import { ref, watchEffect } from "vue";
 
 export default {
-  name: 'WeatherOutput',
   components: {BaseCard},
   props: {
-    weatherData: {
+    currentLocationWeather: {
+      type: Object
+    },
+    currentWeather: {
       type: Object
     }
   },
-  setup (props) {
-    const weatherDataProp = ref(props.weatherData.value);
-    let extractedData = weatherDataProp;
-
-    watchEffect(() => {
-      //extractedData = JSON.parse(JSON.stringify(weatherDataProp.value.data[0]));
-    })
-
+  data () {
     return {
-      extractedData,
+      userLocationWeather: this.currentLocationWeather
+
+    }
+  },
+  watch: {
+    userLocationWeather () {
+      if (this.currentWeather) {
+        this.userLocationWeather = null;
+      }
     }
   }
 }
 </script>
+
 
 <style scoped>
 .weather-output {
