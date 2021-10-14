@@ -47,11 +47,12 @@ export default {
       currentWeather: null,
       userInput: null,
       weatherApiKey: process.env.VUE_APP_WEATHER_STACK_API_KEY,
+      zipcode: this.zip
     }
   },
   methods: {
-    getCurrentLocationWeather () {
-      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&postal_code=${ this.zip }&units=I`)
+    getCurrentLocationWeather (zip) {
+      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&postal_code=${ zip }&units=I`)
           .then(response => {
             if (response.status === 200) {
               this.currentLocationWeather = response.data.data[0]
@@ -68,8 +69,11 @@ export default {
           })
     }
   },
-  beforeMount () {
-    this.getCurrentLocationWeather();
+  created () {
+    this.zipcode = this.zip;
+  },
+  mounted () {
+    this.getCurrentLocationWeather(this.zipcode);
   }
 }
 </script>

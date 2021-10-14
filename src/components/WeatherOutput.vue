@@ -6,6 +6,7 @@
     </template>
     <template v-slot:content>
       <div class="form-control">
+       <p>The weather in {{ userLocationWeather.city_name }} is currently {{ userLocationWeather.app_temp }} degrees farenheit</p>
       </div>
     </template>
     <template v-slot:footer></template>
@@ -27,11 +28,14 @@ export default {
   },
   data () {
     return {
-      userLocationWeather: this.currentLocationWeather
+      userLocationWeather: null
 
     }
   },
   watch: {
+    currentLocationWeather (prev) {
+      this.userLocationWeather = prev;
+    },
     userLocationWeather () {
       if (this.currentWeather) {
         this.userLocationWeather = null;

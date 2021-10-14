@@ -34,7 +34,7 @@ export default {
           .then(response => this.zip = response.data.zip)
     }
   },
-  mounted () {
+  created () {
     this.extractIp();
     this.getZipFromIp();
   }
