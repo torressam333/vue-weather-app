@@ -1,19 +1,18 @@
-describe('Ensure Weather Input Properly Receives api data', () => {
+describe('Ensure Weather Input Properly Retrieves api data', () => {
     it('Visits localhost url', () => {
         cy.visit('http://localhost:8080/')
     })
 
     it('Gets initial weather data on page load', () => {
-        cy.server()
         cy.request(Cypress.env('weather_stack_base_url') +
             "?key=" + Cypress.env('weather_stack_key') +
-            "&query=Phoenix").as('getWeatherData');
+            "&postal_code=85326&units=I`").as('getWeatherData');
 
         cy.get('@getWeatherData').should((response) => {
             expect(response.status).to.eq(200)
-            expect(response.body).to.have.property('current')
-            expect(response.body).to.have.property('location')
-            expect(response.body).to.have.property('request')
+            expect(response).to.have.property('headers')
+            expect(response.body).to.have.property('data')
+            expect(response.body.data).to.have.property('0')
         })
     })
 
