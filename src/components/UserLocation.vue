@@ -6,7 +6,6 @@
 
 <script>
 
-import {getUserIp} from "../utilities/getUserIp";
 import WeatherInput from "./WeatherInput";
 import axios from 'axios';
 
@@ -15,28 +14,26 @@ export default {
   components: {WeatherInput},
   data () {
     return {
-      ipAddress: null,
       ipStackKey: process.env.VUE_APP_IP_STACK_KEY,
       ipStackUrl: process.env.VUE_APP_IP_STACK_URL,
+      ipAddress: null,
       zip: null
     }
   },
   methods: {
-    extractIp () {
-      let ipObj = getUserIp();
+    async getZipFromIp () {
+      let ipResponse = await fetch('https://api64.ipify.org?format=json');
+      let ipInfo = await ipResponse.json();
+      this.ipAddress = ipInfo.ip;
 
-      ipObj.then(response => this.ipAddress = response.ip)
-
-    },
-
-    getZipFromIp () {
-      axios.get(`${this.ipStackUrl}2600:8800:86ac:6400:12e7:c6ff:fe16:8c6e?access_key=${this.ipStackKey}`)
-          .then(response => this.zip = response.data.zip)
+      await axios.get(`${this.ipStackUrl}${this.ipAddress}?access_key=${this.ipStackKey}`)
+          .then(response => {
+            this.zip = response.data.zip;
+          });
     }
   },
-  created () {
-    this.extractIp();
-    this.getZipFromIp();
-  }
+  async created () {
+    await this.getZipFromIp();
+  },
 }
 </script>

@@ -64,16 +64,22 @@ export default {
           .then(response => {
             this.userInput = null;
             if (response.status === 200) {
+              this.currentLocationWeather = null; //set back to null to display either or
               this.currentWeather = response.data.data[0];
             }
-          })
+          });
     }
   },
-  created () {
-    this.zipcode = this.zip;
-  },
   mounted () {
-    this.getCurrentLocationWeather(this.zipcode);
+    //Set timeout is needed because the api call was happening shortly
+    //BEFORE the template was being mounted...super frustrating to figure out
+    setTimeout(() => {
+      //Only make api call if no data exists (otherwise I might exceed my free tier limits :S)
+      if (!this.currentLocationWeather) {
+        this.zipcode = this.zip;
+        this.getCurrentLocationWeather(this.zipcode);
+      }
+    }, 300);
   }
 }
 </script>

@@ -1,12 +1,17 @@
 <template>
-  <div class="weather-output" v-if="userLocationWeather || currentWeather">
+  <div class="weather-output" v-if="currentLocationWeather || currentWeather">
   <base-card>
     <template v-slot:title>
       <h2 class="weather-title">Weather Information</h2>
     </template>
     <template v-slot:content>
-      <div class="form-control">
-       <p>The weather in {{ userLocationWeather.city_name }} is currently {{ userLocationWeather.app_temp }} degrees farenheit</p>
+      <div class="form-control" v-if="currentLocationWeather">
+       <p>The weather in{{ currentLocationWeather.city_name }}, {{currentLocationWeather.state_code}}
+         is currently {{ currentLocationWeather.app_temp }} degrees fahrenheit</p>
+      </div>
+      <div v-else-if="currentWeather">
+        <p>The weather in {{ currentWeather.city_name }}, {{currentWeather.state_code}}
+          is currently {{ currentWeather.app_temp }} degrees fahrenheit</p>
       </div>
     </template>
     <template v-slot:footer></template>
@@ -26,22 +31,6 @@ export default {
       type: Object
     }
   },
-  data () {
-    return {
-      userLocationWeather: null
-
-    }
-  },
-  watch: {
-    currentLocationWeather (prev) {
-      this.userLocationWeather = prev;
-    },
-    userLocationWeather () {
-      if (this.currentWeather) {
-        this.userLocationWeather = null;
-      }
-    }
-  }
 }
 </script>
 
