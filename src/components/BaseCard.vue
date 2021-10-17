@@ -19,13 +19,14 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
+  height: 13rem;
   margin: 2rem auto;
   max-width: 40rem;
   padding: 1rem;
 }
 
 .header, .content, .footer {
-  padding: 15px;
+  padding: 10px 0 0 5px;
 }
 
 </style>
