@@ -6,7 +6,7 @@
     </template>
     <template v-slot:content>
       <div class="form-control" v-if="currentLocationWeather">
-       <p>The weather in{{ currentLocationWeather.city_name }}, {{currentLocationWeather.state_code}}
+       <p>The weather in {{ currentLocationWeather.city_name }}, {{currentLocationWeather.state_code}}
          is currently {{ currentLocationWeather.app_temp }} degrees fahrenheit</p>
       </div>
       <div v-else-if="currentWeather">

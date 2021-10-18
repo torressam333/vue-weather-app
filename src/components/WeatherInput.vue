@@ -10,6 +10,7 @@
             v-model="userInput"
             id="weather-search"
             placeholder="Get weather by entering a location..."
+            required
             type="text">
         <a @click="getCurrentWeather" class="search-icon">
           <!-- explicit style -->

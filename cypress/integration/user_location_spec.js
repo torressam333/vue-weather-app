@@ -1,5 +1,5 @@
 describe('Return users ip address via api call', () => {
-    it('Makes a request to ipify api', () => {
+    it('Makes a request to ipify api and returns an ip address', () => {
         cy.request('https://api64.ipify.org?format=json').as('usersIP');
 
         cy.get('@usersIP').should((response) => {
@@ -11,7 +11,7 @@ describe('Return users ip address via api call', () => {
 });
 
 describe('Return a zip code using ip address via api call', () => {
-    it('Makes a request to ipify api', () => {
+    it('Makes a request to ipify api and returns a zip code', () => {
         cy.request(Cypress.env('ip_stack_url') +
             "2600:8800:86ac:6400:12e7:c6ff:fe16:8c6e?access_key=" + Cypress.env('ip_stack_key'))
             .as('getIpLocationData');
