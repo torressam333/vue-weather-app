@@ -9,7 +9,7 @@
             class="weather-search"
             v-model="userInput"
             id="weather-search"
-            placeholder="Get weather by entering a location..."
+            placeholder="Enter city and state"
             required
             type="text">
         <a @click="getCurrentWeather" class="search-icon">
@@ -37,9 +37,12 @@ export default {
     BaseCard,
   },
   props: {
-    zip: {
+    city: {
       type: String
-    }
+    },
+    state: {
+      type: String
+    },
   },
   data () {
     return {
@@ -48,12 +51,11 @@ export default {
       currentWeather: null,
       userInput: null,
       weatherApiKey: process.env.VUE_APP_WEATHER_STACK_API_KEY,
-      zipcode: this.zip
     }
   },
   methods: {
-    getCurrentLocationWeather (zip) {
-      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&postal_code=${ zip }&units=I`)
+    getCurrentLocationWeather (city, state) {
+      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&city=${ city }, ${ state}&units=I`)
           .then(response => {
             if (response.status === 200) {
               this.currentLocationWeather = response.data.data[0]
@@ -79,8 +81,7 @@ export default {
     setTimeout(() => {
       //Only make api call if no data exists (otherwise I might exceed my free tier limits :S)
       if (!this.currentLocationWeather) {
-        this.zipcode = this.zip;
-        this.getCurrentLocationWeather(this.zipcode);
+        this.getCurrentLocationWeather(this.city, this.state);
       }
     }, 300);
   }

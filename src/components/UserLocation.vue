@@ -1,6 +1,7 @@
 <template>
   <weather-input
-      :zip="zip"
+      :city="city"
+      :state="state"
   ></weather-input>
 </template>
 
@@ -17,23 +18,27 @@ export default {
       ipStackKey: process.env.VUE_APP_IP_STACK_KEY,
       ipStackUrl: process.env.VUE_APP_IP_STACK_URL,
       ipAddress: null,
-      zip: null
+      city: null,
+      state: null,
     }
   },
   methods: {
-    async getZipFromIp () {
+    async getLocationFromIp () {
       let ipResponse = await fetch('https://api64.ipify.org?format=json');
       let ipInfo = await ipResponse.json();
+      console.log(ipInfo)
       this.ipAddress = ipInfo.ip;
 
       await axios.get(`${this.ipStackUrl}${this.ipAddress}?access_key=${this.ipStackKey}`)
           .then(response => {
-            this.zip = response.data.zip;
+            console.log(response.data)
+            this.city = response.data.city;
+            this.state = response.data.region_code;
           });
     }
   },
   async created () {
-    await this.getZipFromIp();
+    await this.getLocationFromIp();
   },
 }
 </script>
