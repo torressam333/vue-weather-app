@@ -1,7 +1,7 @@
 <template>
   <base-card>
     <template v-slot:title>
-      <h5>Search weather by entering a location</h5>
+      <h5>Get weather by entering a location</h5>
     </template>
     <template v-slot:content>
       <form class="weather-form">
@@ -9,7 +9,7 @@
             class="weather-search"
             v-model="userInput"
             id="weather-search"
-            placeholder="Enter city and state"
+            placeholder="Enter (city, state) or zip code..."
             required
             type="text">
         <a @click="getCurrentWeather" class="search-icon">
@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     getCurrentLocationWeather (city, state) {
-      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&city=${ city }, ${ state}&units=I`)
+      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&city=${ city }, ${ state}&country=US&units=I`)
           .then(response => {
             if (response.status === 200) {
               this.currentLocationWeather = response.data.data[0]
@@ -63,7 +63,13 @@ export default {
           })
     },
     getCurrentWeather () {
-      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&city=${ this.userInput }&units=I`)
+      let searchType = 'city';
+
+      if (this.checkIfInputIsZip()) {
+        searchType = 'postal_code'
+      }
+
+      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&${searchType}=${ this.userInput }&country=US&units=I`)
           .then(response => {
             this.userInput = null;
             if (response.status === 200) {
@@ -71,6 +77,11 @@ export default {
               this.currentWeather = response.data.data[0];
             }
           });
+    },
+    checkIfInputIsZip () {
+      const zipCodeRegex = /^\d{5}$/;
+
+      return zipCodeRegex.test(this.userInput);
     }
   },
   mounted () {

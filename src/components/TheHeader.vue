@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header>
+    <header class="the-header">
       <h1>{{ passedTitle }}</h1>
     </header>
   </div>

@@ -9,7 +9,7 @@ describe('Ensure Weather Input Properly Retrieves api data on page load', () => 
     });
 
     it('Finds form header', () => {
-        cy.contains('Search weather by entering a location')
+        cy.contains('Get weather by entering a location')
     });
 
     it('Gets users ip address information on page load', () => {
