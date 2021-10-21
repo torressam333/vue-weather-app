@@ -15,7 +15,7 @@ describe('Ensure weather data is returned and displayed when form is submitted',
             //Actual input
             cy.get('.weather-search')
                 //Provide input before submit button is clicked
-                .type('Phoenix, AZ')
+                .type('Boston, MA')
                 .get('.search-icon').click()
         })
     });

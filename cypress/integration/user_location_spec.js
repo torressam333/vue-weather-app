@@ -10,7 +10,7 @@ describe('Return users ip address via api call', () => {
     });
 });
 
-describe('Return a zip code using ip address via api call', () => {
+describe('Return a city and state using user ip address via api call', () => {
     it('Makes a request to ipify api and returns a city and state', () => {
         cy.request(Cypress.env('ip_stack_url') +
             "2600:8800:86ac:6400:12e7:c6ff:fe16:8c6e?access_key=" + Cypress.env('ip_stack_key'))

@@ -26,7 +26,7 @@ export default {
     async getLocationFromIp () {
       let ipResponse = await fetch('https://api64.ipify.org?format=json');
       let ipInfo = await ipResponse.json();
-      console.log(ipInfo)
+
       this.ipAddress = ipInfo.ip;
 
       await axios.get(`${this.ipStackUrl}${this.ipAddress}?access_key=${this.ipStackKey}`)

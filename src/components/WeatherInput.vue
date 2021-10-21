@@ -84,11 +84,13 @@ export default {
       return zipCodeRegex.test(this.userInput);
     }
   },
-  mounted () {
-    //Set timeout is needed because the api call was happening shortly
-    //BEFORE the template was being mounted...super frustrating to figure out
-    //Order of execution is weired for parent/child...i.e.
-    //Parent created then child created but child mounted before parent mounted
+  created () {
+   /* Set timeout is needed because the api call was happening shortly
+    BEFORE the DOM was being mounted...super frustrating to figure out
+
+    Order of execution is weird for parent/child...i.e.
+    Parent created then child created but child mounted before parent mounted
+    */
     setTimeout(() => {
       //Only make api call if no data exists (otherwise I might exceed my free tier limits :S)
       if (!this.currentLocationWeather) {

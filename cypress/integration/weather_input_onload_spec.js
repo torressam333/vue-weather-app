@@ -19,7 +19,7 @@ describe('Ensure Weather Input Properly Retrieves api data on page load', () => 
     it('Gets initial weather data on page load', () => {
         cy.request(Cypress.env('weather_stack_base_url') +
             "?key=" + Cypress.env('weather_stack_key') +
-            "&postal_code=90210&units=I`").as('getWeatherData');
+            "&city=Phoenix,AZ&units=I`").as('getWeatherData');
 
         cy.get('@getWeatherData').should((response) => {
             expect(response.status).to.eq(200)
@@ -28,4 +28,8 @@ describe('Ensure Weather Input Properly Retrieves api data on page load', () => 
             expect(response.body.data).to.have.property('0')
         });
     });
+
+    it('Should display the weather information card', () => {
+        cy.get('.weather-output').should('be.visible');
+    })
 });
