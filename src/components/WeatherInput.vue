@@ -4,7 +4,7 @@
       <h5>Get weather by entering a location</h5>
     </template>
     <template v-slot:content>
-      <form class="weather-form">
+      <form class="weather-form" data-cy="weather-input-form">
         <input
             class="weather-search"
             v-model="userInput"

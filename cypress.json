@@ -1,7 +1,9 @@
 {
   "baseUrl": "http://localhost:8080/",
+  "viewportHeight": 800,
+  "viewportWidth": 1000,
   "component": {
     "componentFolder": "src",
-    "testFiles": "**/*.spec.js"
+    "testFiles": "**/componentTests/*.spec.js"
   }
 }
