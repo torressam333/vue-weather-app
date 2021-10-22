@@ -9,18 +9,21 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
+    "@cypress/vue": "^2.2.3",
+    "@cypress/webpack-dev-server": "^1.7.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^3.0.0-4",
     "axios": "^0.23.0",
     "core-js": "^3.6.5",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue-loader": "^15.9.8"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.13",
     "@vue/cli-plugin-eslint": "~4.5.13",
     "@vue/cli-service": "~4.5.13",
-    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/compiler-sfc": "^3.2.19",
     "babel-eslint": "^10.1.0",
     "cypress": "^8.5.0",
     "eslint": "^6.7.2",

@@ -1,5 +1,5 @@
 <template>
-  <div class="base-card">
+  <div class="base-card" data-cy="base-card-div">
     <header class="header">
       <slot name="title"></slot>
     </header>
