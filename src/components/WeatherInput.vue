@@ -4,15 +4,18 @@
       <h5>Get weather by entering a location</h5>
     </template>
     <template v-slot:content>
-      <form class="weather-form" data-cy="weather-input-form">
+      <form class="weather-form" data-cy="weather-input-form" v-on:submit.prevent>
         <input
             class="weather-search"
             v-model="userInput"
             id="weather-search"
             placeholder="Enter (city, state) or zip code..."
             required
+            @keypress.enter="onKeyPress"
             type="text">
-        <a @click="getCurrentWeather" class="search-icon">
+        <input type="hidden">
+        <a @click="getCurrentWeather"
+           class="search-icon">
           <!-- explicit style -->
           <font-awesome-icon :icon="['fas', 'search']"/>
         </a>
@@ -82,6 +85,9 @@ export default {
       const zipCodeRegex = /^\d{5}$/;
 
       return zipCodeRegex.test(this.userInput);
+    },
+    onKeyPress () {
+      this.getCurrentWeather();
     }
   },
   created () {
