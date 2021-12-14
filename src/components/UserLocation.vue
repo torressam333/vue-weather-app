@@ -31,7 +31,6 @@ export default {
 
       await axios.get(`${this.ipStackUrl}${this.ipAddress}?access_key=${this.ipStackKey}`)
           .then(response => {
-            console.log(response.data)
             this.city = response.data.city;
             this.state = response.data.region_code;
           });

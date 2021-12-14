@@ -57,6 +57,17 @@ export default {
     }
   },
   methods: {
+    async getCurrentLocationWeatherAsync(city, state) {
+      const response = await fetch(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&city=${ city }, ${ state}&country=US&units=I`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      let data = await response.json();
+
+      this.currentLocationWeather = data.data[0];
+    },
     getCurrentLocationWeather (city, state) {
       axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&city=${ city }, ${ state}&country=US&units=I`)
           .then(response => {
@@ -99,9 +110,10 @@ export default {
     */
     setTimeout(() => {
       //Only make api call if no data exists (otherwise I might exceed my free tier limits :S)
-      if (!this.currentLocationWeather) {
-        this.getCurrentLocationWeather(this.city, this.state);
-      }
+       if (!this.currentLocationWeather) {
+          this.getCurrentLocationWeatherAsync(this.city, this.state)
+      //   this.getCurrentLocationWeather(this.city, this.state);
+       }
     }, 300);
   }
 }
