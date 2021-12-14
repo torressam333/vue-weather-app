@@ -11,7 +11,7 @@
             id="weather-search"
             placeholder="Enter (city, state) or zip code..."
             required
-            @keypress.enter="onKeyPress"
+            @keypress.enter="onKeyPressEnter"
             type="text">
         <input type="hidden">
         <a @click="getCurrentWeather"
@@ -31,7 +31,6 @@
 
 <script>
 import BaseCard from './BaseCard';
-import axios from 'axios';
 import WeatherOutput from "./WeatherOutput";
 
 export default {
@@ -47,7 +46,7 @@ export default {
       type: String
     },
   },
-  data () {
+  data() {
     return {
       baseWeatherApiUrl: process.env.VUE_APP_WEATHER_STACK_BASE_URL,
       currentLocationWeather:null,
@@ -68,40 +67,36 @@ export default {
 
       this.currentLocationWeather = data.data[0];
     },
-    getCurrentLocationWeather (city, state) {
-      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&city=${ city }, ${ state}&country=US&units=I`)
-          .then(response => {
-            if (response.status === 200) {
-              this.currentLocationWeather = response.data.data[0]
-            }
-          })
-    },
-    getCurrentWeather () {
+    async getCurrentWeather() {
       let searchType = 'city';
 
       if (this.checkIfInputIsZip()) {
         searchType = 'postal_code'
       }
 
-      axios.get(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&${searchType}=${ this.userInput }&country=US&units=I`)
-          .then(response => {
-            this.userInput = null;
-            if (response.status === 200) {
-              this.currentLocationWeather = null; //set back to null to display either or
-              this.currentWeather = response.data.data[0];
-            }
-          });
+      const response = await fetch(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&${searchType}=${ this.userInput }&country=US&units=I`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      let data = await response.json();
+
+      //set back to null to display either the initial weather 
+      //or the user's search results
+      this.currentLocationWeather = null;
+      this.currentWeather = data.data[0];
     },
-    checkIfInputIsZip () {
+    checkIfInputIsZip() {
       const zipCodeRegex = /^\d{5}$/;
 
       return zipCodeRegex.test(this.userInput);
     },
-    onKeyPress () {
+    onKeyPressEnter() {
       this.getCurrentWeather();
     }
   },
-  created () {
+  created() {
    /* Set timeout is needed because the api call was happening shortly
     BEFORE the DOM was being mounted...super frustrating to figure out
 
@@ -112,7 +107,6 @@ export default {
       //Only make api call if no data exists (otherwise I might exceed my free tier limits :S)
        if (!this.currentLocationWeather) {
           this.getCurrentLocationWeatherAsync(this.city, this.state)
-      //   this.getCurrentLocationWeather(this.city, this.state);
        }
     }, 300);
   }
