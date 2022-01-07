@@ -4,33 +4,37 @@
       <h5>Get weather by entering a location</h5>
     </template>
     <template v-slot:content>
-      <form class="weather-form" data-cy="weather-input-form" v-on:submit.prevent>
+      <form
+        class="weather-form"
+        data-cy="weather-input-form"
+        v-on:submit.prevent
+      >
         <input
-            class="weather-search"
-            v-model="userInput"
-            id="weather-search"
-            placeholder="Enter (city, state) or zip code..."
-            required
-            @keypress.enter="onKeyPressEnter"
-            type="text">
-        <input type="hidden">
-        <a @click="getCurrentWeather"
-           class="search-icon">
+          class="weather-search"
+          v-model="userInput"
+          id="weather-search"
+          placeholder="Enter (city, state) or zip code..."
+          required
+          @keypress.enter="onKeyPressEnter"
+          type="text"
+        />
+        <input type="hidden" />
+        <a @click="getCurrentWeather" class="search-icon">
           <!-- explicit style -->
-          <font-awesome-icon :icon="['fas', 'search']"/>
+          <font-awesome-icon :icon="['fas', 'search']" />
         </a>
       </form>
     </template>
   </base-card>
   <!--Weather api results slot-->
   <weather-output
-      :current-location-weather="currentLocationWeather"
-      :current-weather="currentWeather"
+    :current-location-weather="currentLocationWeather"
+    :current-weather="currentWeather"
   ></weather-output>
 </template>
 
 <script>
-import BaseCard from './BaseCard';
+import BaseCard from "./BaseCard";
 import WeatherOutput from "./WeatherOutput";
 
 export default {
@@ -40,24 +44,26 @@ export default {
   },
   props: {
     city: {
-      type: String
+      type: String,
     },
     state: {
-      type: String
+      type: String,
     },
   },
   data() {
     return {
       baseWeatherApiUrl: process.env.VUE_APP_WEATHER_STACK_BASE_URL,
-      currentLocationWeather:null,
+      currentLocationWeather: null,
       currentWeather: null,
       userInput: null,
       weatherApiKey: process.env.VUE_APP_WEATHER_STACK_API_KEY,
-    }
+    };
   },
   methods: {
     async getCurrentLocationWeatherAsync(city, state) {
-      const response = await fetch(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&city=${ city }, ${ state}&country=US&units=I`);
+      const response = await fetch(
+        `${this.baseWeatherApiUrl}?key=${this.weatherApiKey}&city=${city}, ${state}&country=US&units=I`
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -68,13 +74,15 @@ export default {
       this.currentLocationWeather = data.data[0];
     },
     async getCurrentWeather() {
-      let searchType = 'city';
+      let searchType = "city";
 
       if (this.checkIfInputIsZip()) {
-        searchType = 'postal_code'
+        searchType = "postal_code";
       }
 
-      const response = await fetch(`${ this.baseWeatherApiUrl }?key=${ this.weatherApiKey }&${searchType}=${ this.userInput }&country=US&units=I`);
+      const response = await fetch(
+        `${this.baseWeatherApiUrl}?key=${this.weatherApiKey}&${searchType}=${this.userInput}&country=US&units=I`
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -82,7 +90,7 @@ export default {
 
       let data = await response.json();
 
-      //set back to null to display either the initial weather 
+      //set back to null to display either the initial weather
       //or the user's search results
       this.currentLocationWeather = null;
       this.currentWeather = data.data[0];
@@ -94,10 +102,10 @@ export default {
     },
     onKeyPressEnter() {
       this.getCurrentWeather();
-    }
+    },
   },
   created() {
-   /* Set timeout is needed because the api call was happening shortly
+    /* Set timeout is needed because the api call was happening shortly
     BEFORE the DOM was being mounted...super frustrating to figure out
 
     Order of execution is weird for parent/child...i.e.
@@ -105,12 +113,12 @@ export default {
     */
     setTimeout(() => {
       //Only make api call if no data exists (otherwise I might exceed my free tier limits :S)
-       if (!this.currentLocationWeather) {
-          this.getCurrentLocationWeatherAsync(this.city, this.state)
-       }
+      if (!this.currentLocationWeather) {
+        this.getCurrentLocationWeatherAsync(this.city, this.state);
+      }
     }, 300);
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -159,13 +167,13 @@ h5 {
   outline: none;
 }
 
-
 /*Remove chromes weird input outline on focus*/
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
 }
 
 .weather-search {
-
 }
 </style>
