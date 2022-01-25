@@ -1,24 +1,26 @@
-describe('Ensure weather data is returned and displayed when form is submitted', () => {
-    it('Visits home page', () => {
-        //1. Arrange - setup initial app state
-        cy.visit('http://localhost:8080/')
-    });
+describe("Ensure weather data is returned and displayed when form is submitted", () => {
+  it("Visits home page", () => {
+    //1. Arrange - setup initial app state
+    cy.visit("http://localhost:8080/");
+  });
 
-    it('Finds the weather input form', () => {
-        cy.get('.weather-form');
-    });
+  it("Finds the weather input form", () => {
+    cy.get(".weather-form");
+  });
 
-    //Act - take an action
-    it('Finds the form and calls weather api on submit', () => {
-        //Ensure we items within weather input form
-        cy.get('.weather-form').within(() => {
-            //Actual input
-            cy.get('.weather-search')
-                //Provide input before submit button is clicked
-                .type('Boston, MA')
-                .get('.search-icon').click()
-        })
+  //Act - take an action
+  it("Finds the form and calls weather api on submit", () => {
+    //Ensure we items within weather input form
+    cy.get(".weather-form").within(() => {
+      //Actual input
+      cy.get(".weather-search")
+        //Provide input before submit button is clicked
+        .type("Boston, MA")
+        .wait(500)
+        .get(".search-icon")
+        .click();
     });
+  });
 
-    //Assert - make an assertion about page content
+  //Assert - make an assertion about page content
 });
